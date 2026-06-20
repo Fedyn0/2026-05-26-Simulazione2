@@ -73,4 +73,20 @@ class Controller:
         self._view.update_page()
 
     def handleCammino(self, e):
-        pass
+
+        if len(self._model._grafo) == 0:
+            self._view.create_alert("Prima è necessario creare il grafo")
+            self._view.update_page()
+            return
+
+        self._view.txt_result.controls.append(
+            ft.Text(f"Cammino ottimo trovato: ")
+        )
+
+        cammino = self._model.getBestPath()
+        for i in cammino:
+            self._view.txt_result.controls.append(
+                ft.Text(f"{i.name}")
+            )
+
+        self._view.update_page()

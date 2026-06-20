@@ -1,10 +1,14 @@
+import copy
+
 import networkx as nx
 
 from database.DAO import DAO
 
 
 class Model:
+
     def __init__(self):
+        self._bestPath = None
         self._grafo = nx.Graph()
         self._nodes = []
         self._idMapNames = {}
@@ -48,7 +52,26 @@ class Model:
         for i in archi:
             nuovaLista.append((i[0], i[1], i[2]["weight"]))
 
-
         return nuovaLista[0:5]
 
 
+    def getBestPath(self):
+        self._bestPath = []
+        parziale = []
+
+        for start in self._grafo.nodes():
+            parziale.append(start)
+            self._ricorsione(parziale)
+
+        return self._bestPath
+
+    def _ricorsione(self, parziale):
+
+        if len(parziale) > len(self._bestPath):
+            self._bestPath = copy.deepcopy(parziale)
+
+        for _, successor in self._grafo.edges(parziale[-1]):
+            if successor.date_of_birth > parziale[-1].date_of_birth:
+                parziale.append(successor)
+                self._ricorsione(parziale)
+                parziale.pop()
